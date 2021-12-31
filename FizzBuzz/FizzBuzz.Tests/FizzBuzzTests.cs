@@ -1,3 +1,4 @@
+using FizzBuzzLibrary;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -10,20 +11,21 @@ namespace FizzBuzz.Tests
         public void GivenIntegerThatIsNotMultipleOfThreeOrFive_WhenAskingForString_ThenItShouldReturnIntegerAsString()
         {
             // arrange
-            FizzBuzzString subject = new(1);
+            FizzBuzzLibrary.FizzBuzz subject = new(2);
 
             // act
             string actual = subject.AsString();
 
             // assert
-            actual.Should().Be("1");
+            actual.Should().Be("2");
         }
 
         [TestMethod, TestCategory("Unit")]
         public void GivenIntegerThatIsMultipleOfThree_WhenAskingForString_ThenItShouldReturnFizz()
         {
             // arrange
-            FizzBuzzString subject = new(3);
+            const int three = 3;
+            FizzBuzzLibrary.FizzBuzz subject = new(3 * three);
 
             // act
             string actual = subject.AsString();
@@ -36,7 +38,8 @@ namespace FizzBuzz.Tests
         public void GivenIntegerThatIsMultipleOfFive_WhenAskingForString_ThenItShouldReturnBuzz()
         {
             // arrange
-            FizzBuzzString subject = new(5);
+            const int five = 5;
+            FizzBuzzLibrary.FizzBuzz subject = new(4 * five);
 
             // act
             string actual = subject.AsString();
@@ -49,7 +52,9 @@ namespace FizzBuzz.Tests
         public void GivenIntegerThatIsMultipleOfThreeAndFive_WhenAskingForString_ThenItShouldReturnFizzBuzz()
         {
             // arrange
-            FizzBuzzString subject = new(15);
+            const int three = 3;
+            const int five = 5;
+            FizzBuzzLibrary.FizzBuzz subject = new(4 * three * five);
 
             // act
             string actual = subject.AsString();
@@ -57,63 +62,5 @@ namespace FizzBuzz.Tests
             // assert
             actual.Should().Be("FizzBuzz");
         }
-    }
-
-    public class FizzBuzzString
-    {
-        private readonly IIntegerAsString _integerAsString;
-
-        public FizzBuzzString(int value) : this(IntegerAsStringFactory.Instance(value)) {}
-
-        public FizzBuzzString(IIntegerAsString integerAsString) => _integerAsString = integerAsString;
-
-        public string AsString() => _integerAsString.AsString();
-    }
-
-    public interface IIntegerAsString
-    {
-        string AsString();
-    }
-
-    public class IntegerAsStringFactory
-    {
-        public static IIntegerAsString Instance(int value)
-        {
-            if (value % (3 * 5) == 0) return new IntegerToFizzBuzzStrategy();
-            if (value % 5 == 0) return new IntegerToBuzzStrategy();
-            if (value % 3 == 0) return new IntegerToFizzStrategy();
-            return new IntegerToStringStrategy(value);
-        }
-    }
-
-    public static class FizzBuzzText
-    {
-        public const string Fizz = "Fizz";
-        public const string Buzz = "Buzz";
-        public static string FizzBuzz = $"{Fizz}{Buzz}";
-    }
-
-    public class IntegerToFizzBuzzStrategy : IIntegerAsString
-    {
-        public string AsString() => FizzBuzzText.FizzBuzz;
-    }
-
-    public class IntegerToBuzzStrategy : IIntegerAsString
-    {
-        public string AsString() => FizzBuzzText.Buzz;
-    }
-
-    public class IntegerToFizzStrategy : IIntegerAsString
-    {
-        public string AsString() => FizzBuzzText.Fizz;
-    }
-
-    public class IntegerToStringStrategy : IIntegerAsString
-    {
-        private readonly int _value;
-
-        public IntegerToStringStrategy(int value) => _value = value;
-
-        public string AsString() => _value.ToString();
     }
 }
